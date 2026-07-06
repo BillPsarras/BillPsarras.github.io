@@ -1,1 +1,128 @@
+<!DOCTYPE html>
+<html lang="el">
 
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullscreen Morse</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            transition: background-color 0.05s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #startBtn {
+            padding: 15px 40px;
+            font-size: 24px;
+            cursor: pointer;
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 8px;
+            font-family: sans-serif;
+            font-weight: bold;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        #startBtn:hover {
+            background-color: #ddd;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <button id="startBtn">Έναρξη Μορς</button>
+
+    <script>
+        const PHRASES_TO_TRANSLATE = "ĀΩΡςΤΑΙ Η ΙΣΤΟΡΙΑ|ΛΕΠΤΗ ΚΛΩΣΤΗ ΣΕ ΕΔΑΦΟΣ ΣΟΦΟ";
+
+        const GREEK_MORSE_DICT = {
+            'Α': '.-', 'Β': '-...', 'Γ': '--.', 'Δ': '-..',
+            'Ε': '.', 'Ζ': '--..', 'Η': '....', 'Θ': '-.-.',
+            'Ι': '..', 'Κ': '-.-', 'Λ': '.-..', 'Μ': '--',
+            'Ν': '-.', 'Ξ': '-..-', 'Ο': '---', 'Π': '.--.',
+            'Ρ': '.-.', 'Σ': '...', 'Τ': '-', 'Υ': '-.--',
+            'Φ': '..-.', 'Χ': '----', 'Ψ': '--.-', 'Ω': '.--',
+            'Ά': '.-', 'Έ': '.', 'Ή': '....', 'Ί': '..',
+            'Ό': '---', 'Ύ': '-.--', 'Ώ': '.--', 'Ϊ': '..',
+            'Ϋ': '-.--', 'ς': '...', 'Ā': '.-.-'
+        };
+
+        const DOT_DURATION = 1000;
+        const DASH_DURATION = 3000;
+        const INTER_GAP = 250;
+        const LETTER_GAP = 1000;
+        const WORD_GAP = 7000;
+        const PHRASE_GAP = 10000;
+
+        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        async function playMorse() {
+            const body = document.body;
+            const cleanText = PHRASES_TO_TRANSLATE.toUpperCase().split('|');
+
+            await sleep(1000);
+
+            for (let p = 0; p < cleanText.length; p++) {
+                for (let i = 0; i < cleanText[p].length; i++) {
+                    const char = cleanText[p][i];
+
+                    if (char === ' ') {
+                        body.style.backgroundColor = 'black';
+                        await sleep(WORD_GAP);
+                        continue;
+                    }
+
+                    const morseCode = GREEK_MORSE_DICT[char];
+                    if (!morseCode) continue;
+
+                    for (let j = 0; j < morseCode.length; j++) {
+                        const symbol = morseCode[j];
+                        body.style.backgroundColor = 'white';
+
+                        if (symbol === '.') {
+                            await sleep(DOT_DURATION);
+                        } else if (symbol === '-') {
+                            await sleep(DASH_DURATION);
+                        }
+
+                        body.style.backgroundColor = 'black';
+                        await sleep(INTER_GAP);
+                    }
+                    await sleep(LETTER_GAP);
+                }
+                await sleep(PHRASE_GAP);
+            }
+        }
+        const startBtn = document.getElementById('startBtn');
+
+        startBtn.addEventListener('click', async () => {
+            const docEl = document.documentElement;
+
+            try {
+                if (docEl.requestFullscreen) await docEl.requestFullscreen();
+                else if (docEl.webkitRequestFullscreen) await docEl.webkitRequestFullscreen();
+                else if (docEl.msRequestFullscreen) await docEl.msRequestFullscreen();
+            }
+            catch { }
+
+            startBtn.style.display = 'none';
+            playMorse();
+        });
+    </script>
+
+
+</body>
+
+</html>

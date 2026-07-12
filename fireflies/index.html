@@ -21,13 +21,13 @@
         }
 
         #startBtn {
-            padding: 15px 40px;
-            font-size: 24px;
+            padding: 15px 15px;
+            font-size: 20px;
             cursor: pointer;
             background-color: white;
             color: black;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-family: sans-serif;
             font-weight: bold;
             transition: transform 0.2s, background-color 0.2s;
@@ -37,12 +37,40 @@
             background-color: #ddd;
             transform: scale(1.05);
         }
+
+        #message {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: darkslategray;
+            color: white;
+            opacity: 0.5;
+            padding: 5px 15px;
+            font-size: 10px;
+            font-family: sans-serif;
+            width: 25%;
+            min-width: 360px;
+        }
     </style>
 </head>
 
 <body>
 
-    <button id="startBtn">Έναρξη Μορς</button>
+    <button id="startBtn">ενεργοποίηση ποιήματος
+        <hr>activate poem
+    </button>
+    <div id="message">
+        <p>
+            ⚠️ <strong>ΣΗΜΑΝΤΙΚΟ ΜΗΝΥΜΑ ΑΣΦΑΛΕΙΑΣ</strong> - <em><strong>Προειδοποίηση Φωτοευαισθησίας:</strong> Το έργο
+                περιλαμβάνει εναλλαγές φωτός και σκοταδιού (σήματα Morse). Συνιστάται μεγάλη προσοχή για άτομα με
+                φωτοευαίσθητη επιληψία ή ευαισθησία σε έντονες οπτικές μεταβολές.</em>
+        </p>
+        <p>
+            ⚠️ <strong>IMPORTANT MESSAGE</strong> - <em><strong>Photosensitivity Warning:</strong> This artwork features
+                alternating patterns of light and darkness (Morse code signals). Caution is strongly advised for
+                individuals with photosensitive epilepsy or sensitivity to intense visual transitions.</em>
+        </p>
+    </div>
 
     <script>
         const PHRASES_TO_TRANSLATE = "ĀΩΡςΤΑΙ Η ΙΣΤΟΡΙΑ|ΛΕΠΤΗ ΚΛΩΣΤΗ ΣΕ ΕΔΑΦΟΣ ΣΟΦΟ";
@@ -104,11 +132,14 @@
                 }
                 await sleep(PHRASE_GAP);
             }
+            location.reload();
         }
         const startBtn = document.getElementById('startBtn');
+        const message = document.getElementById('message');
+        const docEl = document.documentElement;
 
         startBtn.addEventListener('click', async () => {
-            const docEl = document.documentElement;
+            message.style.display = "none";
 
             try {
                 if (docEl.requestFullscreen) await docEl.requestFullscreen();
